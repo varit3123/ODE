@@ -15,7 +15,6 @@
 
 ```powershell
 cd "C:\Users\zhail\Desktop\Общая для всех\module-1"
-py -m pip install -r requirements.txt
 py manage.py migrate
 py manage.py seed_demo
 py manage.py runserver 127.0.0.1:8001
@@ -39,3 +38,21 @@ py manage.py runserver 127.0.0.1:8000
 - Администратор: `Admin26` / `Demo20`
 - Пользователь: `demo26` / `Demo2026`
 - Второй пользователь: `anna26` / `River2026`
+
+Создание локального Git-репозитория
+
+Откройте новый CMD и по очереди выполните команды:
+
+cd путь_к_папке_с_работой
+git init
+git config user.name "Любое имя"
+git config user.email "Любая почта"
+git add .
+git commit -m "Создание проекта"
+
+Например, имя и почта могут быть любыми:
+
+git config user.name "Test"
+git config user.email "test@local"
+
+После выполнения команд в папке будет создан локальный Git-репозиторий, а все файлы проекта сохранятся в первом коммите.
