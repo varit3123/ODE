@@ -1,0 +1,39 @@
+erDiagram
+  AUTH_USER ||--|| PORTAL_PROFILE : has
+  AUTH_USER ||--o{ PORTAL_APPLICATION : creates
+  AUTH_USER ||--o{ PORTAL_REVIEW : writes
+  PORTAL_APPLICATION ||--o| PORTAL_REVIEW : receives
+
+  AUTH_USER {
+    integer id PK
+    varchar username UK
+    varchar email
+    varchar password
+  }
+
+  PORTAL_PROFILE {
+    integer id PK
+    integer user_id FK
+    varchar full_name
+    date birth_date
+    varchar phone
+  }
+
+  PORTAL_APPLICATION {
+    integer id PK
+    integer user_id FK
+    varchar transport
+    date start_date
+    varchar payment_method
+    text comment
+    varchar status
+    date created_at
+  }
+
+  PORTAL_REVIEW {
+    integer id PK
+    integer application_id FK
+    integer user_id FK
+    text text
+    date created_at
+  }

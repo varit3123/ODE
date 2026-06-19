@@ -1,0 +1,61 @@
+﻿{% load static %}
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Водить.РФ | Кабинет</title>
+  <link rel="stylesheet" href="{% static 'module2/styles.css' %}">
+</head>
+<body>
+<div class="m2-shell">
+  <header class="m2-header">
+    <a class="m2-brand" href="{% url 'module2:cabinet' %}"><img src="{% static 'module2/assets/boat.png' %}" alt=""><span>Водить.РФ</span></a>
+    <nav class="m2-nav"><a class="active" href="{% url 'module2:cabinet' %}">Кабинет</a><a href="{% url 'module2:request' %}">Заявка</a><a href="{% url 'module2:logout' %}">Выход</a></nav>
+  </header>
+  <main class="m2-page">
+    {% for message in messages %}<div class="toast">{{ message }}</div>{% endfor %}
+    <section class="m2-head">
+      <div><p class="kicker">Личный кабинет</p><h1>{{ request.user.profile.full_name }}</h1><p class="muted">Во втором модуле добавлены изображения, маска даты и отзывы.</p></div>
+      <a class="btn primary" href="{% url 'module2:request' %}">Новая заявка</a>
+    </section>
+    <section class="m2-photo" aria-label="Фотографии транспорта">
+      <div class="slider-track" id="sliderTrack">
+        <img src="{% static 'module2/images/image.jpeg' %}" alt="Речной транспорт">
+        <img src="{% static 'module2/images/image (1).jpeg' %}" alt="Лайнер">
+        <img src="{% static 'module2/images/image (2).jpeg' %}" alt="Яхта">
+      </div>
+      <button class="slider-control" id="sliderPrev" type="button">Назад</button>
+      <button class="slider-control" id="sliderNext" type="button">Вперед</button>
+      <div class="slider-dots" id="sliderDots"></div>
+    </section>
+    <section class="m2-records">
+      {% for application in applications %}
+        <article class="m2-record">
+          <div>
+            <h3>{{ application.transport }}</h3>
+            <p class="muted">Заявка от {{ application.created_at|date:"d.m.Y" }}</p>
+            <span class="status {% if application.status == 'Идет обучение' %}progress{% elif application.status == 'Обучение завершено' %}done{% endif %}">{{ application.status }}</span>
+          </div>
+          <div>
+            <div class="m2-facts"><div><span>Старт</span>{{ application.start_date|date:"d.m.Y" }}</div><div><span>Оплата</span>{{ application.payment_method }}</div><div><span>Комментарий</span>{{ application.comment|default:"Нет" }}</div></div>
+            {% if application.review_text %}
+              <div class="review"><strong>Отзыв:</strong><p>{{ application.review_text }}</p></div>
+            {% elif application.status != 'Новая' %}
+              <form class="review" method="post">
+                {% csrf_token %}<input type="hidden" name="application_id" value="{{ application.id }}">
+                <label>Отзыв {{ review_form.text }}</label>
+                <button class="btn warn" type="submit">Отправить отзыв</button>
+              </form>
+            {% else %}
+              <p class="muted">Отзыв появится после обработки заявки.</p>
+            {% endif %}
+          </div>
+        </article>
+      {% empty %}<div class="empty">Заявок пока нет.</div>{% endfor %}
+    </section>
+  </main>
+</div>
+<script src="{% static 'module2/app.js' %}"></script>
+</body>
+</html>

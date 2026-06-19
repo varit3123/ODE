@@ -1,0 +1,38 @@
+﻿{% load static %}
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Водить.РФ | Вход</title>
+  <link rel="stylesheet" href="{% static 'module1/styles.css' %}">
+</head>
+<body>
+<div class="m1-top">
+  <aside class="m1-side">
+    <a class="m1-logo" href="{% url 'module1:login' %}">Водить.РФ</a>
+    <nav class="m1-menu">
+      <a class="active" href="{% url 'module1:login' %}">Вход</a>
+      <a href="{% url 'module1:register' %}">Регистрация</a>
+      <a href="{% url 'module1:admin' %}">Администратор</a>
+    </nav>
+  </aside>
+  <main class="m1-main">
+    <div class="m1-title">
+      <h1>Вход в личный кабинет</h1>
+      <p class="m1-note">Базовый модуль: авторизация пользователя и работа с заявками.</p>
+    </div>
+    <section class="m1-box m1-small">
+      <form method="post" novalidate>
+        {% csrf_token %}
+        <label>Логин {{ form.login }}<span class="field-error">{{ form.login.errors|striptags }}</span></label>
+        <label>Пароль {{ form.password }}<span class="field-error">{{ form.password.errors|striptags }}</span></label>
+        <p class="form-message">{{ form.non_field_errors|striptags }}</p>
+        <button class="btn primary" type="submit">Войти</button>
+      </form>
+      <p class="m1-login-links">Нет учетной записи? <a href="{% url 'module1:register' %}">Зарегистрироваться</a></p>
+    </section>
+  </main>
+</div>
+</body>
+</html>

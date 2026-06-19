@@ -1,0 +1,52 @@
+﻿{% load static %}
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Водить.РФ | Администратор</title>
+  <link rel="stylesheet" href="{% static 'module2/styles.css' %}">
+</head>
+<body>
+<div class="m2-shell">
+  <header class="m2-header">
+    <a class="m2-brand" href="{% url 'module2:login' %}"><img src="{% static 'module2/assets/boat.png' %}" alt=""><span>Водить.РФ</span></a>
+    <nav class="m2-nav"><a href="{% url 'module2:login' %}">Вход</a><a href="{% url 'module2:register' %}">Регистрация</a><a class="active" href="{% url 'module2:admin' %}">Админ</a></nav>
+  </header>
+  <main class="m2-page">
+    {% for message in messages %}<div class="toast">{{ message }}</div>{% endfor %}
+    {% if not request.session.module2_admin %}
+      <section class="m2-panel wide">
+        <p class="kicker">Администратор</p><h1>Вход в панель</h1>
+        <form method="post" novalidate>
+          {% csrf_token %}<input type="hidden" name="action" value="login">
+          <label>Логин {{ form.login }}</label><label>Пароль {{ form.password }}</label>
+          <p class="form-message">{{ form.non_field_errors|striptags }}</p>
+          <button class="btn primary" type="submit">Открыть</button>
+        </form>
+      </section>
+    {% else %}
+      <section class="m2-head"><div><p class="kicker">Обработка</p><h1>Заявки пользователей</h1></div></section>
+      <form class="m2-filter" method="get">
+        <label>Поиск <input name="search" value="{{ request.GET.search }}" placeholder="ФИО, логин, телефон"></label>
+        <label>Статус <select name="status"><option value="">Все</option>{% for value, label in status_choices %}<option value="{{ value }}" {% if request.GET.status == value %}selected{% endif %}>{{ label }}</option>{% endfor %}</select></label>
+        <label>Транспорт <select name="transport"><option value="">Все</option>{% for value, label in transport_choices %}<option value="{{ value }}" {% if request.GET.transport == value %}selected{% endif %}>{{ label }}</option>{% endfor %}</select></label>
+        <label>Сортировка <select name="sort"><option value="created_desc" {% if request.GET.sort == 'created_desc' or not request.GET.sort %}selected{% endif %}>Новые</option><option value="date_asc" {% if request.GET.sort == 'date_asc' %}selected{% endif %}>Дата</option><option value="name_asc" {% if request.GET.sort == 'name_asc' %}selected{% endif %}>ФИО</option></select></label>
+        <button class="btn primary full" type="submit">Показать</button>
+      </form>
+      {% for application in applications %}
+        <article class="m2-admin-row">
+          <div><h3>{{ application.user.profile.full_name }}</h3><p class="muted">{{ application.user.username }}<br>{{ application.user.profile.phone }}<br>{{ application.user.email }}</p></div>
+          <div><span class="status {% if application.status == 'Идет обучение' %}progress{% elif application.status == 'Обучение завершено' %}done{% endif %}">{{ application.status }}</span><div class="m2-facts"><div><span>Курс</span>{{ application.transport }}</div><div><span>Старт</span>{{ application.start_date|date:"d.m.Y" }}</div><div><span>Оплата</span>{{ application.payment_method }}</div></div><p class="muted">{{ application.comment|default:"Без комментария" }}</p>{% if application.review_text %}<p><strong>Отзыв:</strong> {{ application.review_text }}</p>{% endif %}</div>
+          <form method="post">
+            {% csrf_token %}<input type="hidden" name="application_id" value="{{ application.id }}">
+            <label>Статус <select name="status" data-status-select><option {% if application.status == 'Новая' %}selected{% endif %}>Новая</option><option {% if application.status == 'Идет обучение' %}selected{% endif %}>Идет обучение</option><option {% if application.status == 'Обучение завершено' %}selected{% endif %}>Обучение завершено</option></select></label>
+          </form>
+        </article>
+      {% empty %}<div class="empty">Заявок по выбранным условиям нет.</div>{% endfor %}
+    {% endif %}
+  </main>
+</div>
+<script src="{% static 'module2/app.js' %}"></script>
+</body>
+</html>

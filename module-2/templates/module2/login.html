@@ -1,0 +1,38 @@
+﻿{% load static %}
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Водить.РФ | Вход</title>
+  <link rel="stylesheet" href="{% static 'module2/styles.css' %}">
+</head>
+<body>
+<div class="m2-shell">
+  <header class="m2-header">
+    <a class="m2-brand" href="{% url 'module2:login' %}"><img src="{% static 'module2/assets/boat.png' %}" alt=""><span>Водить.РФ</span></a>
+    <nav class="m2-nav"><a class="active" href="{% url 'module2:login' %}">Вход</a><a href="{% url 'module2:register' %}">Регистрация</a><a href="{% url 'module2:admin' %}">Админ</a></nav>
+  </header>
+  <main class="m2-page m2-start">
+    <aside class="m2-intro">
+      <p class="kicker">Второй модуль</p>
+      <h1>Обучение управлению водным транспортом</h1>
+      <p class="muted">Заявки, статусы и отзывы собраны в личном кабинете.</p>
+      <img src="{% static 'module2/assets/po-rekam-spb.jpg' %}" alt="Речной транспорт">
+    </aside>
+    <section class="m2-panel">
+      <h2>Авторизация</h2>
+      <form method="post" novalidate>
+        {% csrf_token %}
+        <label>Логин {{ form.login }}<span class="field-error">{{ form.login.errors|striptags }}</span></label>
+        <label>Пароль {{ form.password }}<span class="field-error">{{ form.password.errors|striptags }}</span></label>
+        <p class="form-message">{{ form.non_field_errors|striptags }}</p>
+        <button class="btn primary" type="submit">Войти</button>
+      </form>
+      <p class="switch">Нет аккаунта? <a href="{% url 'module2:register' %}">Создать</a></p>
+    </section>
+  </main>
+</div>
+<script src="{% static 'module2/app.js' %}"></script>
+</body>
+</html>

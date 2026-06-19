@@ -1,0 +1,33 @@
+﻿{% load static %}
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Водить.РФ | Новая заявка</title>
+  <link rel="stylesheet" href="{% static 'module2/styles.css' %}">
+</head>
+<body>
+<div class="m2-shell">
+  <header class="m2-header">
+    <a class="m2-brand" href="{% url 'module2:cabinet' %}"><img src="{% static 'module2/assets/boat.png' %}" alt=""><span>Водить.РФ</span></a>
+    <nav class="m2-nav"><a href="{% url 'module2:cabinet' %}">Кабинет</a><a class="active" href="{% url 'module2:request' %}">Заявка</a><a href="{% url 'module2:logout' %}">Выход</a></nav>
+  </header>
+  <main class="m2-page">
+    <section class="m2-panel wide">
+      <p class="kicker">Курс обучения</p><h1>Новая заявка</h1>
+      <form method="post" class="m2-form-grid" novalidate>
+        {% csrf_token %}
+        <label>Вид транспорта {{ form.transport }}<span class="field-error">{{ form.transport.errors|striptags }}</span></label>
+        <label>Дата начала {{ form.start_date }}<span class="field-error">{{ form.start_date.errors|striptags }}</span></label>
+        <label>Оплата {{ form.payment_method }}<span class="field-error">{{ form.payment_method.errors|striptags }}</span></label>
+        <label class="full">Комментарий {{ form.comment }}</label>
+        <p class="form-message full">{{ form.non_field_errors|striptags }}</p>
+        <button class="btn primary" type="submit">Отправить заявку</button>
+      </form>
+    </section>
+  </main>
+</div>
+<script src="{% static 'module2/app.js' %}"></script>
+</body>
+</html>

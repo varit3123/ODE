@@ -1,0 +1,36 @@
+﻿{% load static %}
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Водить.РФ | Заявка</title>
+  <link rel="stylesheet" href="{% static 'module1/styles.css' %}">
+</head>
+<body>
+<div class="m1-top">
+  <aside class="m1-side">
+    <a class="m1-logo" href="{% url 'module1:cabinet' %}">Водить.РФ</a>
+    <nav class="m1-menu">
+      <a href="{% url 'module1:cabinet' %}">Кабинет</a>
+      <a class="active" href="{% url 'module1:request' %}">Новая заявка</a>
+      <a href="{% url 'module1:logout' %}">Выход</a>
+    </nav>
+  </aside>
+  <main class="m1-main">
+    <div class="m1-title"><h1>Заявка на обучение</h1><p class="m1-note">Первый модуль: обычная форма без дополнительных сценариев.</p></div>
+    <section class="m1-box">
+      <form method="post" class="m1-grid" novalidate>
+        {% csrf_token %}
+        <label>Вид транспорта {{ form.transport }}<span class="field-error">{{ form.transport.errors|striptags }}</span></label>
+        <label>Дата начала {{ form.start_date }}<span class="field-error">{{ form.start_date.errors|striptags }}</span></label>
+        <label>Оплата {{ form.payment_method }}<span class="field-error">{{ form.payment_method.errors|striptags }}</span></label>
+        <label class="full">Комментарий {{ form.comment }}</label>
+        <p class="form-message full">{{ form.non_field_errors|striptags }}</p>
+        <button class="btn primary" type="submit">Отправить</button>
+      </form>
+    </section>
+  </main>
+</div>
+</body>
+</html>

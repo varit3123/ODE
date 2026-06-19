@@ -1,0 +1,66 @@
+﻿{% load static %}
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Водить.РФ | Администратор</title>
+  <link rel="stylesheet" href="{% static 'module1/styles.css' %}">
+</head>
+<body>
+<div class="m1-top">
+  <aside class="m1-side">
+    <a class="m1-logo" href="{% url 'module1:login' %}">Водить.РФ</a>
+    <nav class="m1-menu">
+      <a href="{% url 'module1:login' %}">Вход</a>
+      <a href="{% url 'module1:register' %}">Регистрация</a>
+      <a class="active" href="{% url 'module1:admin' %}">Администратор</a>
+    </nav>
+  </aside>
+  <main class="m1-main">
+    {% if not request.session.module1_admin %}
+      <div class="m1-title"><h1>Администратор</h1><p class="m1-note">Вход в служебный раздел.</p></div>
+      <section class="m1-box m1-small">
+        <form method="post" novalidate>
+          {% csrf_token %}<input type="hidden" name="action" value="login">
+          <label>Логин {{ form.login }}</label>
+          <label>Пароль {{ form.password }}</label>
+          <p class="form-message">{{ form.non_field_errors|striptags }}</p>
+          <button class="btn primary" type="submit">Открыть</button>
+        </form>
+      </section>
+    {% else %}
+      {% for message in messages %}<p class="form-message success">{{ message }}</p>{% endfor %}
+      <div class="m1-title"><h1>Журнал заявок</h1><p class="m1-note">Простое изменение статусов без фильтров.</p></div>
+      <div class="m1-table-wrap">
+        <table>
+          <thead><tr><th>Пользователь</th><th>Контакты</th><th>Курс</th><th>Старт</th><th>Оплата</th><th>Статус</th></tr></thead>
+          <tbody>
+          {% for application in applications %}
+            <tr>
+              <td><strong>{{ application.user.profile.full_name }}</strong><br>{{ application.user.username }}</td>
+              <td>{{ application.user.profile.phone }}<br>{{ application.user.email }}</td>
+              <td>{{ application.transport }}<br><span class="muted">{{ application.comment|default:"Нет комментария" }}</span></td>
+              <td>{{ application.start_date|date:"d.m.Y" }}</td>
+              <td>{{ application.payment_method }}</td>
+              <td>
+                <form method="post">
+                  {% csrf_token %}<input type="hidden" name="application_id" value="{{ application.id }}">
+                  <select name="status">
+                    <option {% if application.status == 'Новая' %}selected{% endif %}>Новая</option>
+                    <option {% if application.status == 'Идет обучение' %}selected{% endif %}>Идет обучение</option>
+                    <option {% if application.status == 'Обучение завершено' %}selected{% endif %}>Обучение завершено</option>
+                  </select>
+                  <button class="btn flat" type="submit">ОК</button>
+                </form>
+              </td>
+            </tr>
+          {% empty %}<tr><td colspan="6">Заявок нет.</td></tr>{% endfor %}
+          </tbody>
+        </table>
+      </div>
+    {% endif %}
+  </main>
+</div>
+</body>
+</html>
